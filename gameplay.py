@@ -169,10 +169,10 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                     message_y = WINDOW_HEIGHT / 2 - 90
                     returnfont = pygame.font.Font("./res/Neuton-Italic.ttf", 30)
                     if self.player1.HP <= 0:
-                        winMessage = winfont.render("Player 1 WINS!", 0, GREEN)
+                        winMessage = winfont.render("Player 2 WINS!", 0, GREEN)
 
                     else:
-                        winMessage = winfont.render("Player 2 WINS!", 0, GREEN)
+                        winMessage = winfont.render("Player 1 WINS!", 0, GREEN)
 
                     Message_rect = winMessage.get_rect()
                     gamePad.blit(winMessage, (message_x, message_y))
@@ -343,9 +343,6 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                         # 데미지입었을때 플레이어1 헬스바 감소
                         player1_healthbar_x += healthbar_damage
                         player1_healthbar_width -= healthbar_damage
-
-
-
 
                     else:
                         self.drawObject(self.player1.drawobj, self.player1.xpos, self.player1.ypos)
