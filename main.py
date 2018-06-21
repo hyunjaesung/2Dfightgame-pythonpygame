@@ -1,23 +1,27 @@
-import gameplay
-import pygame
+import interface
+
 
 WINDOW_WIDTH = 512
 WINDOW_HEIGHT = 300
 
 if __name__ == "__main__":
-    global gamePad
+  #  global gamePad
 
 
-    CAPTION = "Fight game"
+   # CAPTION = "Fight game"
 
-    pygame.init()
+    #pygame.init()
 
 
-    pygame.display.set_caption((CAPTION))
+    #pygame.display.set_caption((CAPTION))
 
-    clock = pygame.time.Clock()
+    #clock = pygame.time.Clock()
 
-    game = gameplay.GamePlay()
+    #game = gameplay.GamePlay()
 
-    game.InitGame()
-    game.RunGame()
+    #game.InitGame()
+    #game.RunGame()
+
+  interface.main_menu()
+  interface.pygame.quit()
+  quit()

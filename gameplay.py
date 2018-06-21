@@ -57,7 +57,7 @@ class Environment: #  게임관련 함수와 인자들
         self.def_sound = pygame.mixer.Sound('./res/defend.wav')
         self.hurt_sound = pygame.mixer.Sound('./res/hurt.wav')
         self.jump_sound = pygame.mixer.Sound('./res/jump.wav')
-        self.Background_sound = pygame.mixer.music.load('./res/background.mp3')
+
 
 
     def drawObject(self, obj, x, y): # 그리기함수
@@ -103,7 +103,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
 
     def RunGame(self):
 
-        pygame.mixer.music.play(-1)
+
 
         player1_basic_key = 0;
         player2_basic_key = 0;
@@ -412,8 +412,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
 
 
 
-        pygame.quit()
-        quit()
+
 
 
 
