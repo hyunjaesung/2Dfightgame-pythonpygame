@@ -23,10 +23,7 @@ class Player: # 플레이어 정보 클래스
         self.drawobj = drawobj
 
 
-    def changedrawobj(self, drawobj):
-        self.drawobj = drawobj
 
-#class HealthBar:
 
 
 class Environment: #  게임관련 함수와 인자들
