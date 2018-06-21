@@ -4,7 +4,7 @@ import pygame
 global WINDOW_WIDTH, WINDOW_HEIGHT
 
 WHITE = (255, 255, 255)
-RED = (255, 0, 0)
+RED = (255, 20, 0)
 GREEN = (0, 255, 0)
 
 WINDOW_WIDTH = 512
@@ -46,12 +46,11 @@ class Environment: #  게임관련 함수와 인자들
         self.background_image = pygame.image.load('./res/background.png')
         self.HealthBar = pygame.image.load('./res/HealthBar.png')
 
-        self.hit_sound = pygame.mixer.Sound('./res/hit.wav')
-
-        self.def_sound = pygame.mixer.Sound('./res/def.wav')
-
-
-        #self.Background_sound = pygame.mixer.Sound('background.wav')
+        self.hit_sound = pygame.mixer.Sound('./res/hit.flac')
+        self.def_sound = pygame.mixer.Sound('./res/defend.wav')
+        self.hurt_sound = pygame.mixer.Sound('./res/hurt.wav')
+        self.jump_sound = pygame.mixer.Sound('./res/jump.wav')
+        self.Background_sound = pygame.mixer.music.load('./res/background.mp3')
 
 
     def drawObject(self, obj, x, y): # 그리기함수
@@ -59,10 +58,14 @@ class Environment: #  게임관련 함수와 인자들
 
     def Attacked(self, x): # 공격당했을때 함수
         x.HP -= 10
-        pygame.mixer.Sound.play(self.hit_sound)
+        pygame.mixer.Sound.play(self.hurt_sound)
 
     def Defended(self): # 막기 성공했을경우 함수
         pygame.mixer.Sound.play(self.def_sound)
+
+
+    def drawHealthBar(self, x, y ,health_width):
+        pygame.draw.rect(gamePad, RED, (x, y, health_width, 15))
 
 
 
@@ -93,7 +96,9 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
 
     def RunGame(self):
 
-        #pygame.mixer.Sound.play(self.background_sound)
+        pygame.mixer.music.play(-1)
+
+
         x_change_1 = 0
         x_change_2 = 0
         jump_1 = 0
@@ -104,6 +109,14 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
         defend_2 = 0
         jump_key_1 = 5
         jump_key_2 = 5
+        player1_healthbar_x = WINDOW_WIDTH * 0.1 + 7
+        player1_healthbar_y = WINDOW_HEIGHT * 0.1 + 5
+        player1_healthbar_width= 180
+        player2_healthbar_x =  player1_healthbar_x + 206
+        player2_healthbar_y = WINDOW_HEIGHT * 0.1 + 5
+        player2_healthbar_width = 180
+        healthbar_damage = 18
+
 
         notFinished = True
 
@@ -111,13 +124,33 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
 
         while notFinished:
 
+
             self.drawObject(self.background_image, 0, 0)
-            self.drawObject(self. HealthBar, WINDOW_WIDTH * 0.1, WINDOW_HEIGHT*0.1 )
+            self.drawObject(self. HealthBar, WINDOW_WIDTH * 0.1, WINDOW_HEIGHT*0.1)
+
+
+            if player1_healthbar_width > 0:
+                self.drawHealthBar(player1_healthbar_x, player1_healthbar_y, player1_healthbar_width)
+
+            if player2_healthbar_width > 0:
+                self.drawHealthBar(player2_healthbar_x, player2_healthbar_y, player2_healthbar_width)
+
+
+            #
+            # 게임종료!!!
+            #
+            #
+            if self.player1.HP <= 0 or self.player2.HP <=0:
+                notFinished = False
+
+
+
+
 
 
             #  조작키
             # 플레이어 1 : 이동 위g 왼쪽v 오른쪽n 공격 왼쪽ctrl 막기 왼쪽 alt
-            # 플레이어 2 : 이동 방향키           공격 ]        막기 p
+            # 플레이어 2 : 이동 방향키           공격 ]        막기 [
 
 
             #에너지 파는 아직 구현안됨
@@ -135,15 +168,12 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                     elif event.key == pygame.K_n:
                         x_change_1 = 5
                     elif event.key == pygame.K_g:
+                        pygame.mixer.Sound.play(self.jump_sound)
                         jump_1 = 1
-                    elif event.key == pygame.K_LSHIFT: # 불꽃발사
-                        pygame.mixer.Sound.play(self.hit_sound)
-                        bullet_x = self.player2.xpos + self.character_width
-                        bullet_y = self.player2.ypos - self.character_height / 2
-                        #bullet_xy.append([bullet_x, bullet_y])
 
                     elif event.key == pygame.K_LCTRL: # 공격
                         attack_1 = 1
+                        pygame.mixer.Sound.play(self.hit_sound)
 
                     elif event.key == pygame.K_LALT: # 막기
                         defend_1 = 1
@@ -159,17 +189,14 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                     elif event.key == pygame.K_RIGHT:
                         x_change_2 = 5
                     elif event.key == pygame.K_UP: ## 점프
+                        pygame.mixer.Sound.play(self.jump_sound)
                         jump_2 = 1
-                    elif event.key == pygame.K_GREATER: # 불꽃발사
-                        #pygame.mixer.Sound.play(self.hit_sound)
-                        bullet_x = self.player2.xpos + self.character_width
-                        bullet_y = self.player2.ypos - self.character_height / 2
-                        #bullet_xy.append([bullet_x, bullet_y])
 
                     elif event.key == pygame.K_RIGHTBRACKET: # 공격
+                        pygame.mixer.Sound.play(self.hit_sound)
                         attack_2 = 1
 
-                    elif event.key == pygame.K_p: # 막기
+                    elif event.key == pygame.K_LEFTBRACKET: # 막기
                         defend_2 = 1
 
 
@@ -186,7 +213,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                     if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                         x_change_2 = 0
 
-                    if event.key == pygame.K_p:
+                    if event.key == pygame.K_LEFTBRACKET:
                         defend_2 = 0
 
 
@@ -221,7 +248,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
 
             if (jump_1 == 1):  ## player1 점프
                 self.drawObject(self.jump1, self.player1.xpos, self.player1.ypos)
-                self.drawObject(self.jump2, self.player2.xpos, self.player2.ypos)
+                self.drawObject(self.player2.drawobj, self.player2.xpos, self.player2.ypos)
                 if (jump_key_1 > 0):
                     jump_key_1 -= 1
                     self.player1.ypos -= 10
@@ -232,7 +259,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                     jump_key_1 = 5
                     jump_1 = 0
             elif(jump_2 == 1): ## player2 점프
-                self.drawObject(self.jump1, self.player1.xpos, self.player1.ypos)
+                self.drawObject(self.player1.drawobj, self.player1.xpos, self.player1.ypos)
                 self.drawObject(self.jump2, self.player2.xpos, self.player2.ypos)
                 if (jump_key_2 > 0):
                     jump_key_2 -= 1
@@ -251,6 +278,10 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                     if self.player1.xpos + self.character_width > self.player2.xpos:
                         self.Attacked(self.player2)
                         self.drawObject(self.hitted2, self.player2.xpos, self.player2.ypos)
+                        #데미지 입었을때 플레이어2 헬스바 감소
+                        player2_healthbar_width -= healthbar_damage
+
+
                     else:
                         self.drawObject(self.player2.drawobj, self.player2.xpos, self.player2.ypos)
                 elif(defend_2 == 1):
@@ -269,6 +300,13 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                     if self.player2.xpos < self.player1.xpos + self.character_width:
                         self.drawObject(self.hitted1, self.player1.xpos, self.player1.ypos)
                         self.Attacked(self.player1)
+                        # 데미지입었을때 플레이어1 헬스바 감소
+                        player1_healthbar_x += healthbar_damage
+                        player1_healthbar_width -= healthbar_damage
+
+
+
+
                     else:
                         self.drawObject(self.player1.drawobj, self.player1.xpos, self.player1.ypos)
 
@@ -297,6 +335,11 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
             else: #  평상시 캐릭터
                 self.drawObject(self.player1.drawobj, self.player1.xpos, self.player1.ypos)
                 self.drawObject(self.player2.drawobj, self.player2.xpos, self.player2.ypos)
+
+
+
+
+
 
 
 
