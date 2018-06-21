@@ -81,22 +81,22 @@ class Environment: #  게임관련 함수와 인자들
 class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
     def __init__(self):
         Environment.__init__(self)
-        self.player1 = Player(1, 0, 0, 100, self.player1_1)
-        self.player2 = Player(1, 0, 0, 100, self.player2_1)
+        self.player1 = Player(1, 0, 0, 100, self.player1_1) # 플레이어 클래스
+        self.player2 = Player(1, 0, 0, 100, self.player2_1) # 플레이어 클래스
 
         self.character_width = 50
         self.character_height = 54
 
 
 
-    def InitGame(self):
+    def InitGame(self): # 게임플레이 초기화
         global gamePad
         global clock
         clock = pygame.time.Clock()
         gamePad = pygame.display.set_mode((512, 300))
-        self.player1.xpos = WINDOW_WIDTH * 0.1
+        self.player1.xpos = WINDOW_WIDTH * 0.1 # 플레이어 1 포지션
         self.player1.ypos = WINDOW_HEIGHT * 0.8
-        self.player2.xpos = WINDOW_WIDTH * 0.82
+        self.player2.xpos = WINDOW_WIDTH * 0.82 # 플레이어 2 포지션
         self.player2.ypos = WINDOW_HEIGHT * 0.8
 
 
@@ -105,23 +105,23 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
 
 
 
-        player1_basic_key = 0;
+        player1_basic_key = 0; # 기본모션 루프를 위한 변수
         player2_basic_key = 0;
 
 
-        x_change_1 = 0
+        x_change_1 = 0 # 이동시 플레이어 x좌표 변화를 위한변수
         x_change_2 = 0
-        walk_1 = 0
+        walk_1 = 0 # 이동시 애니메이션 draw를 위한 변수
         walk_2 = 0
-        jump_1 = 0
+        jump_1 = 0 # 점프시 애니메이션 draw를 위한 변수
         jump_2 = 0
-        attack_1 = 0
+        attack_1 = 0 # 점프시 애니메이션 draw를 위한 변수
         attack_2 = 0
-        defend_1 = 0
+        defend_1 = 0 # 막기시 애니메이션 draw를 위한 변수
         defend_2 = 0
-        jump_key_1 = 5
+        jump_key_1 = 5 # 점프시 애니메이션 부드럽게 단계적 draw를 위한 변수
         jump_key_2 = 5
-        player1_healthbar_x = WINDOW_WIDTH * 0.1 + 7
+        player1_healthbar_x = WINDOW_WIDTH * 0.1 + 7 # hp바 관련변수들
         player1_healthbar_y = WINDOW_HEIGHT * 0.1 + 5
         player1_healthbar_width= 180
         player2_healthbar_x =  player1_healthbar_x + 206
@@ -141,10 +141,10 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
             self.drawObject(self. HealthBar, WINDOW_WIDTH * 0.1, WINDOW_HEIGHT*0.1)
 
 
-            if player1_healthbar_width > 0:
+            if player1_healthbar_width > 0: # hp바 그리기
                 self.drawHealthBar(player1_healthbar_x, player1_healthbar_y, player1_healthbar_width)
 
-            if player2_healthbar_width > 0:
+            if player2_healthbar_width > 0: # hp바 그리기
                 self.drawHealthBar(player2_healthbar_x, player2_healthbar_y, player2_healthbar_width)
 
 
@@ -189,9 +189,9 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
             # 플레이어 2 : 이동 방향키           공격 ]        막기 [
 
 
-            #에너지 파는 아직 구현안됨
 
-            for event in pygame.event.get():
+
+            for event in pygame.event.get(): # 플레이어 키조작
                 if event.type == pygame.QUIT:
                     notFinished = False
 
@@ -301,7 +301,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
             elif(jump_2 == 1): ## player2 점프
                 self.drawObject(self.player1.drawobj, self.player1.xpos, self.player1.ypos)
                 self.drawObject(self.jump2, self.player2.xpos, self.player2.ypos)
-                if (jump_key_2 > 0):
+                if (jump_key_2 > 0): # key값이 변하면서 서서히 떨어짐
                     jump_key_2 -= 1
                     self.player2.ypos -= 10
                 if (jump_key_2 <= 0):
@@ -314,7 +314,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
             elif(attack_1 == 1): # 플레이어 1공격, 플레이어 2 막기
                 self.drawObject(self.attack1, self.player1.xpos, self.player1.ypos)
 
-                if(defend_2 == 0):
+                if(defend_2 == 0): # 안막을때 데미지
                     if self.player1.xpos + self.character_width > self.player2.xpos:
                         self.Attacked(self.player2)
                         self.drawObject(self.hitted2, self.player2.xpos, self.player2.ypos)
@@ -324,7 +324,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
 
                     else:
                         self.drawObject(self.player2.drawobj, self.player2.xpos, self.player2.ypos)
-                elif(defend_2 == 1):
+                elif(defend_2 == 1): # 막을때 데미지 안들어감
                     self.drawObject(self.defend2, self.player2.xpos, self.player2.ypos)
                     if self.player1.xpos + self.character_width > self.player2.xpos:
                         self.Defended()
@@ -336,7 +336,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
             elif (attack_2 == 1): # 플레이어2 공격, 플레이어1 막기
                 self.drawObject(self.attack2, self.player2.xpos, self.player2.ypos)
 
-                if (defend_1 == 0):
+                if (defend_1 == 0): #안막을때 데미지
                     if self.player2.xpos < self.player1.xpos + self.character_width:
                         self.drawObject(self.hitted1, self.player1.xpos, self.player1.ypos)
                         self.Attacked(self.player1)
@@ -347,7 +347,7 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                     else:
                         self.drawObject(self.player1.drawobj, self.player1.xpos, self.player1.ypos)
 
-                elif (defend_1 == 1):
+                elif (defend_1 == 1): #막을때 데미지 안들어감
                     self.drawObject(self.defend1, self.player1.xpos, self.player1.ypos)
                     if self.player2.xpos < self.player1.xpos + self.character_width:
                         self.Defended()
