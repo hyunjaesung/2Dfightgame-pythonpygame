@@ -31,6 +31,16 @@ class Player: # 플레이어 정보 클래스
 
 class Environment: #  게임관련 함수와 인자들
     def __init__(self):
+        self.player1_1 = pygame.image.load('./res/player1.png')
+        self.player1_2 = pygame.image.load('./res/player1_2.png')
+
+        self.player2_1 = pygame.image.load('./res/player2.png')
+        self.player2_2 = pygame.image.load('./res/player2_2.png')
+
+        self.walk1 = pygame.image.load('./res/walk1.png')
+        self.walk2 = pygame.image.load('./res/walk2.png')
+
+
         self.jump1 = pygame.image.load('./res/jump1.png')
         self.jump2 = pygame.image.load('./res/jump2.png')
 
@@ -74,8 +84,8 @@ class Environment: #  게임관련 함수와 인자들
 class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
     def __init__(self):
         Environment.__init__(self)
-        self.player1 = Player(1, 0, 0, 100, pygame.image.load('./res/player1.png'))
-        self.player2 = Player(1, 0, 0, 100, pygame.image.load('./res/player2.png'))
+        self.player1 = Player(1, 0, 0, 100, self.player1_1)
+        self.player2 = Player(1, 0, 0, 100, self.player2_1)
 
         self.character_width = 50
         self.character_height = 54
@@ -98,9 +108,14 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
 
         pygame.mixer.music.play(-1)
 
+        player1_basic_key = 0;
+        player2_basic_key = 0;
+
 
         x_change_1 = 0
         x_change_2 = 0
+        walk_1 = 0
+        walk_2 = 0
         jump_1 = 0
         jump_2 = 0
         attack_1 = 0
@@ -165,8 +180,10 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                     #
                     if event.key == pygame.K_v:
                         x_change_1 = -5
+                        walk_1 = 1
                     elif event.key == pygame.K_n:
                         x_change_1 = 5
+                        walk_1 = 1
                     elif event.key == pygame.K_g:
                         pygame.mixer.Sound.play(self.jump_sound)
                         jump_1 = 1
@@ -186,8 +203,10 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
 
                     if event.key == pygame.K_LEFT:
                         x_change_2 = -5
+                        walk_2 = 1
                     elif event.key == pygame.K_RIGHT:
                         x_change_2 = 5
+                        walk_2 = 1
                     elif event.key == pygame.K_UP: ## 점프
                         pygame.mixer.Sound.play(self.jump_sound)
                         jump_2 = 1
@@ -328,7 +347,14 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                 self.drawObject(self.player1.drawobj, self.player1.xpos, self.player1.ypos)
                 self.drawObject(self.defend2, self.player2.xpos, self.player2.ypos)
 
-
+            elif(walk_1 == 1 ):
+                self.drawObject(self.walk1, self.player1.xpos, self.player1.ypos)
+                self.drawObject(self.player2.drawobj, self.player2.xpos, self.player2.ypos)
+                walk_1 = 0
+            elif(walk_2 == 1):
+                self.drawObject(self.player1.drawobj, self.player1.xpos, self.player1.ypos)
+                self.drawObject(self.walk2, self.player2.xpos, self.player2.ypos)
+                walk_2 = 0
 
 
 
@@ -337,9 +363,21 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
                 self.drawObject(self.player2.drawobj, self.player2.xpos, self.player2.ypos)
 
 
+            # 베이직 모션 2개 반복
 
+            if player1_basic_key == 0 :
+                self.player1.drawobj = self.player1_2
+                player1_basic_key = 1
+            else :
+                self.player1.drawobj = self.player1_1
+                player1_basic_key = 0
 
-
+            if player2_basic_key == 0 :
+                self.player2.drawobj = self.player2_2
+                player2_basic_key = 1
+            else :
+                self.player2.drawobj = self.player2_1
+                player2_basic_key = 0
 
 
 
