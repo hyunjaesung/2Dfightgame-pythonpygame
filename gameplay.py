@@ -53,7 +53,7 @@ class Environment: #  게임관련 함수와 인자들
         self.background_image = pygame.image.load('./res/background.png')
         self.HealthBar = pygame.image.load('./res/HealthBar.png')
 
-        self.hit_sound = pygame.mixer.Sound('./res/hit.flac')
+        self.hit_sound = pygame.mixer.Sound('./res/hit.wav')
         self.def_sound = pygame.mixer.Sound('./res/defend.wav')
         self.hurt_sound = pygame.mixer.Sound('./res/hurt.wav')
         self.jump_sound = pygame.mixer.Sound('./res/jump.wav')
@@ -153,12 +153,36 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
             #
             #
             if self.player1.HP <= 0 or self.player2.HP <=0:
-                notFinished = False
+                finished = True
+                while finished:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            quit()
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_RETURN:
+                                notFinished = False
+                                finished = False
 
+                    winfont = pygame.font.Font("./res/ethnocentric rg it.ttf", 50)
+                    message_x = 0
+                    message_y = WINDOW_HEIGHT / 2 - 90
+                    returnfont = pygame.font.Font("./res/Neuton-Italic.ttf", 30)
+                    if self.player1.HP <= 0:
+                        winMessage = winfont.render("Player 1 WINS!", 0, GREEN)
 
+                    else:
+                        winMessage = winfont.render("Player 2 WINS!", 0, GREEN)
 
+                    Message_rect = winMessage.get_rect()
+                    gamePad.blit(winMessage, (message_x, message_y))
 
+                    returnMessage = returnfont.render("Press Enter to Return to Menu", 0, (0, 0, 0))
+                    returnMessage_rect = returnMessage.get_rect()
+                    gamePad.blit(returnMessage, (WINDOW_WIDTH / 2 - (returnMessage_rect[2] / 2), 180))
 
+                    pygame.display.update()
+                    clock.tick(30)
 
             #  조작키
             # 플레이어 1 : 이동 위g 왼쪽v 오른쪽n 공격 왼쪽ctrl 막기 왼쪽 alt
@@ -375,6 +399,9 @@ class GamePlay(Environment): # 환경클래스 상속, 게임플레이 클래스
             else :
                 self.player2.drawobj = self.player2_1
                 player2_basic_key = 0
+
+
+
 
 
 
